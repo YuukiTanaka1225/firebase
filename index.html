@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>チャットアプリ</title>
+    <style>
+        body {
+            background-color: #e1ede1;
+            width: 50%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .container {
+            width: 50%;
+            text-align: center;
+        }
+
+        #send {
+            color: rgb(2, 2, 2);
+        
+        }
+
+        .first-sentence {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <h1>MINE</h1>
+        <div id="container">
+            <div id="output"></div>
+            <textarea name="履歴" id="ctatlog" cols="50" rows="30"></textarea>
+            <br>
+            <textarea name="text" id="text" placeholder="テキストを入力" cols="40" rows="3"></textarea>
+            <button id="send">送信</button>
+        </div>
+
+    </main>
+    
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved }
+            from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFekCzSlYzfMiC5v8nwmFhl09Xcj-nC44",
+            authDomain: "line-like-chat-52165.firebaseapp.com",
+            projectId: "line-like-chat-52165",
+            storageBucket: "line-like-chat-52165.appspot.com",
+            messagingSenderId: "609976768101",
+            appId: "1:609976768101:web:77d8f80a01a6b25ee7d88c"
+            };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app); //RealtimeDBに接続
+        const dbRef = ref(db, "chat"); //RealtimeDB内の"chat"を使う
+
+        $("#send").on("click", function(){
+            const text =$("#text").val();
+            console.log(text,"textの文字")
+            
+            const newPostRef = push(dbRef);
+            set(newPostRef,text);
+
+            $("text").val("");
+        })
+
+        onChildAdded(dbRef, function(data){
+            const msg = data.val();
+
+            let html=`
+            <div>
+                <p>${msg.text}</p>
+            </div>    
+            `
+            $("#output").apped(html)
+        })
+    </script>
+</body>
+</html>
